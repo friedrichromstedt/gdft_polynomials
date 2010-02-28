@@ -1,0 +1,14 @@
+0.1.1b 2/10
+------
+
+- changes in class Polynomial:
+	In __init__(coefficients), removing obsolete default value.
+	get_dft(order)
+	In __mul__(other), switching to .get_dft() and other.get_dft().
+
+0.1.0b 2/10
+------
+
+- introducing class Polynomial:
+	__init__(coefficients = None)
+	__mul__(other)

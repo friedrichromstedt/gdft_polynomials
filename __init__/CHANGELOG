@@ -1,0 +1,5 @@
+0.1.1b 2/10
+------
+
+- importing from gdft_polynomials.polynomial instead of
+		gdft_polynomial.polynomial (notice trailing "s").

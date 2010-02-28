@@ -18,9 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# Last changed: 2010 Feb 28
+# Last changed: 2010 Feb 27
 # Developed since: Feb 2010
-# File version: 0.1.1b
+# File version: 0.1.0b
 
 import numpy
 import gdft
@@ -32,33 +32,34 @@ class Polynomial:
 	"""Read-only arguments:
 
 	.coefficients - The coefficients."""
-	def __init__(self, coefficients):
+	def __init__(self, coefficients = None):
 		"""Initialise from real-space COEFFICIENTS."""
 
 		self.coefficients = numpy.asarray(coefficients)
-	
-	def get_dft(self, order):
-		"""Returns the DFT of .coefficients padded to order ORDER.  Call
-		fails in case ORDER < len(.coefficients)."""
-
-		padded = numpy.zeros(order)
-		padded[:len(self.coefficients)] = self.coefficients
-
-		dft = gdft.GDFT(padded, asymmetric = True)
-		return dft.get()
 
 	def __mul__(self, other):
 		"""OTHER is supposed to be a Polynomial too."""
 		
 		# Find out the rank of the result ...
 
-		order_result = (len(self.coefficients) - 1) + \
+		rank_result = (len(self.coefficients) - 1) + \
 				(len(other.coefficients) - 1) + 1
+
+		# Pad the coefficients with zeros ...
+
+		self_padded = numpy.zeros(rank_result)
+		self_padded[:len(self.coefficients)] = self.coefficients
+
+		other_padded = numpy.zeros(rank_result)
+		other_padded[:len(other.coefficients)] = other.coefficients
 
 		# Perform DFT ...
 
-		self_dft = self.get_dft(order_result)
-		other_dft = other.get_dft(order_result)
+		self_gdft = gdft.GDFT(self_padded, asymmetric = True)
+		self_dft = self_gdft.get()
+
+		other_gdft = gdft.GDFT(other_padded, asymmetric = True)
+		other_dft = other_gdft.get()
 
 		# Calculate the Fourier transform of the result ...
 
@@ -72,6 +73,4 @@ class Polynomial:
 		return Polynomial(coefficients12)
 	
 	def __str__(self):
-		return 'Polynomial(real part =\n' +	\
-				str(self.coefficients.real) + '\nimaginary part =\n' + \
-				str(self.coefficients.imag) + ')'
+		return str(self.coefficients)
